@@ -1,4 +1,4 @@
-# Aviation Analysis Projects
+# Aviation Projects
 
 Self-development projects focused on aviation data. 
 Please refer to each ipython notebook for more details on each project:
