@@ -21,7 +21,7 @@ Current domains:
 | Domain | Description | Example Topics |
 |--------|-------------|----------------|
 | **Aviation** | Projects publicly available aviation data. | Flight traffic, Social Media tweets |
-| **Finance** | Projects focused on markets, pricing, risk, and market sentiment | Portfolio Analytics |
+| **Finance** | Projects focused on markets, pricing, risk, and market sentiment. | Quantitative Finance |
 | **More coming soon** | Additional domains will be added as the portfolio expands.
 
 ---
