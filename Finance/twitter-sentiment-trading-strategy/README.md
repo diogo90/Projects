@@ -25,6 +25,8 @@ The data pipeline:
 
 ![](docs/pipeline_architecture.png)
 
+As illustrated above the pipeline architecture comprises the following:
+
 Ingestion → DuckDB → dbt Staging → dbt Intermediate → dbt Marts → Notebook
 
 
@@ -55,6 +57,8 @@ A Jupyter notebook visualizes:
 - Strategy vs Nasdaq performance  
 - Excess returns  
 
+Path to notebook: notebooks/twitter_sentiment_trading_strategy.ipynb
+
 ---
 
 ## 📊 Insights Summary
@@ -80,11 +84,11 @@ Together, Docker and Poetry were the foundation for running the entire pipeline 
 ## Tools
 
 🦆 DuckDB Integration
-DuckDB is used as the analytical storage engine because it is:
-• 	Fast
-• 	File‑based
-• 	Zero‑configuration
-• 	Perfect for local analytics projects
+DuckDB is used as the analytics storage engine because it is:
+- Fast
+- File-based
+- Minimal-configuration
+- Great for local analytics projects
 All ingestion scripts write directly into DuckDB tables.
 dbt then reads from DuckDB using the DuckDB adapter.
 
