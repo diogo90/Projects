@@ -89,8 +89,8 @@ DuckDB is used as the analytics storage engine because it is:
 - File-based
 - Minimal-configuration
 - Great for local analytics projects
-All ingestion scripts write directly into DuckDB tables.
-dbt then reads from DuckDB using the DuckDB adapter.
+All ingestion scripts write directly into DuckDB tables, dbt then reads
+from DuckDB using the DuckDB adapter.
 
 🧱 dbt Integration
 dbt is the backbone of the transformation layer.
