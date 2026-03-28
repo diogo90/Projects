@@ -1,0 +1,61 @@
+version: 2
+
+sources:
+  - name: twitter_sentiment_source # name used in source() function 
+    description: "Raw validated sentiment data loaded from DuckDB via the ingestion pipeline."
+    schema: main        # DuckDB default schema unless you created another
+    tables:
+      - name: twitter_sentiment # name of the table created in the duckdb_writer
+        description: "Validated Twitter sentiment table created by the ingestion pipeline."
+        columns:
+          - name: id
+            description: "Unique identifier for the tweet."
+          - name: tweet
+            description: "Full tweet text."
+          - name: username
+            description: "Twitter username of the author."
+          - name: createdAt
+            description: "Timestamp when the tweet was created."
+          - name: followersCount
+            description: "Number of followers the user had at tweet time."
+          - name: retweetCount
+            description: "Number of retweets."
+          - name: replyCount
+            description: "Number of replies."
+          - name: likeCount
+            description: "Number of likes."
+          - name: quoteCount
+            description: "Number of quote tweets."
+          - name: twitterSentiment
+            description: "Sentiment score between -1 and 1 (nullable)."
+
+  - name: yahoo_daily_stock_prices
+    description: "Daily stock price data downloaded from Yahoo Finance and stored in DuckDB."
+    schema: main
+    tables:
+      - name: prices_daily
+        description: "Historical daily OHLCV price data for all symbols in the sentiment dataset."
+  
+  - name: nasdaq_prices
+    description: "Raw Nasdaq benchmark (QQQ) OHLCV price data loaded from DuckDB via the ingestion pipeline."
+    schema: main
+    tables:
+      - name: nasdaq_prices_daily
+        description: "Daily OHLCV price history for the Nasdaq-100 ETF (QQQ), extracted using yfinance."
+        columns:
+          - name: date
+            description: "Trading date."
+          - name: symbol
+            description: "Ticker symbol (always 'QQQ')."
+          - name: Open
+            description: "Opening price for the trading day."
+          - name: High
+            description: "Highest price for the trading day."
+          - name: Low
+            description: "Lowest price for the trading day."
+          - name: Close
+            description: "Closing price for the trading day."
+          - name: Adj Close
+            description: "Adjusted closing price accounting for splits and dividends."
+          - name: Volume
+            description: "Number of shares traded during the day."

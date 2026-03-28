@@ -1,0 +1,61 @@
+version: 2
+
+models:
+  - name: stg_twitter_sentiment
+    description: "Staging model sourcing raw Twitter sentiment data from DuckDB."
+    columns:
+      - name: date
+        description: "Date of the Twitter activity."
+      - name: symbol
+        description: "Stock ticker symbol."
+      - name: twitterPosts
+        description: "Number of Twitter posts."
+      - name: twitterComments
+        description: "Number of comments."
+      - name: twitterLikes
+        description: "Number of likes."
+      - name: twitterImpressions
+        description: "Number of impressions."
+      - name: twitterSentiment
+        description: "Sentiment score extracted from Twitter posts."
+
+  - name: stg_daily_stock_prices
+    description: "Staging model for daily stock prices sourced from DuckDB."
+    columns:
+      - name: date
+        description: "Trading date."
+      - name: symbol
+        description: "Stock ticker symbol."
+      - name: Open
+        description: "Opening price."
+      - name: High
+        description: "Highest price of the day."
+      - name: Low
+        description: "Lowest price of the day."
+      - name: Close
+        description: "Closing price."
+      - name: Volume
+        description: "Trading volume."
+  
+  - name: stg_nasdaq_prices
+    description: >
+      Staging model for Nasdaq (QQQ) daily OHLCV price data. This model
+      standardizes the raw benchmark data extracted via yfinance and prepares
+      it for downstream transformations and benchmark comparisons.
+    columns:
+      - name: date
+        description: "Trading date."
+      - name: symbol
+        description: "Ticker symbol (QQQ)."
+      - name: Open
+        description: "Opening price for the trading day."
+      - name: High
+        description: "Highest price for the trading day."
+      - name: Low
+        description: "Lowest price for the trading day."
+      - name: Close
+        description: "Closing price for the trading day."
+      - name: Adj Close
+        description: "Adjusted closing price accounting for splits and dividends."
+      - name: Volume
+        description: "Number of shares traded during the day."

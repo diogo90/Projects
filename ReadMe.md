@@ -14,14 +14,14 @@ The aim of this portfolio is to showcase:
 #### 🗂️ Repository Structure
 
 Projects are grouped by **domain**, and each domain may contain work spanning analytics, engineering, modelling, visualisation, and more.  
-Every project includes its own README with methodology, structure, and insights.
+Every project includes its own ReadMe (or notebook) with methodology, structure, and insights.
 
 Current domains:
 
 | Domain | Description | Example Topics |
 |--------|-------------|----------------|
 | **Aviation** | Projects publicly available aviation data. | Flight traffic, Social Media tweets |
-| **Finance** | Projects focused on markets, pricing, risk, and market sentiment. | Quantitative Finance |
+| **Finance** | Projects focused on markets, pricing, risk, and market sentiment. | Quantitative Finance, Social Media Market Sentiment |
 | **More coming soon** | Additional domains will be added as the portfolio expands.
 
 ---
@@ -36,3 +36,4 @@ This domain currently includes two projects covering:
 ### **Finance**
 This domain currently includes one project focused on:
 - Unsupervised Learning Trading Strategy
+- Twitter Sentiment Trading Strategy

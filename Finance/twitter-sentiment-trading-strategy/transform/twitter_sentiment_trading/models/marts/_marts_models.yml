@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: portfolio_vs_nasdaq
+    description: >
+      Combines the equal‑weighted portfolio daily returns with the Nasdaq
+      benchmark (QQQ) daily returns into a single comparison table. This mart
+      is used to evaluate strategy performance relative to the market.
+    columns:
+      - name: date
+        description: "Trading date."
+      - name: portfolio_return
+        description: "Daily log return of the equal‑weighted strategy portfolio."
+      - name: nasdaq_return
+        description: "Daily log return of the Nasdaq-100 ETF (QQQ)."
+  
+  - name: strategy_performance
+    description: >
+      Provides a complete performance comparison between the strategy’s
+      equal‑weighted portfolio and the Nasdaq benchmark (QQQ). Includes daily
+      returns, cumulative returns, excess returns, and cumulative excess
+      returns for use in dashboards and performance analytics.
+    columns:
+      - name: date
+        description: "Trading date."
+      - name: portfolio_return
+        description: "Daily log return of the strategy portfolio."
+      - name: nasdaq_return
+        description: "Daily log return of the Nasdaq-100 ETF (QQQ)."
+      - name: portfolio_cumulative_return
+        description: "Cumulative return of the strategy portfolio."
+      - name: nasdaq_cumulative_return
+        description: "Cumulative return of the Nasdaq benchmark."
+      - name: excess_return
+        description: "Daily excess return (portfolio minus Nasdaq)."
+      - name: cumulative_excess_return
+        description: "Cumulative excess return of the strategy over the benchmark."

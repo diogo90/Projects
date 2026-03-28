@@ -1,0 +1,78 @@
+version: 2
+
+models:
+  - name: int_twitter_sentiment
+    description: "Intermediate model adding engagement_ratio and filtering low-engagement rows."
+    columns:
+      - name: date
+        description: "Date of the Twitter activity."
+      - name: symbol
+        description: "Stock ticker symbol."
+      - name: twitterPosts
+        description: "Number of Twitter posts."
+      - name: twitterComments
+        description: "Number of comments."
+      - name: twitterLikes
+        description: "Number of likes."
+      - name: twitterImpressions
+        description: "Number of impressions."
+      - name: twitterSentiment
+        description: "Sentiment score extracted from Twitter posts."
+      - name: engagement_ratio
+        description: "Ratio of comments to likes."
+
+  - name: int_avg_monthly_sentiment
+    description: "Monthly aggregated engagement_ratio with ranking per symbol."
+    columns:
+      - name: month
+        description: "Month of aggregation."
+      - name: symbol
+        description: "Stock ticker symbol."
+      - name: engagement_ratio
+        description: "Average monthly engagement ratio."
+      - name: rank
+        description: "Rank of symbol within each month based on engagement ratio."
+  
+  - name: int_top_5_monthly_stocks
+    description: "Top 5 stocks per month based on engagement_ratio, shifted forward by 1 month for investment."
+    columns:
+      - name: investment_month
+        description: "Month in which the stocks should be invested (month+1)."
+      - name: symbol
+        description: "Stock ticker symbol."
+      - name: engagement_ratio
+        description: "Average monthly engagement ratio."
+      - name: rank
+        description: "Rank of symbol within the previous month."
+  
+  - name: int_stocks_to_invest_by_month
+    description: "List of top 5 stocks to invest in for each month, based on previous month's engagement ranking."
+    columns:
+      - name: investment_month
+        description: "Month in which the investment should occur."
+      - name: symbol
+        description: "Stock selected for investment."
+  
+  - name: int_equal_weighted_portfolio_returns
+    description: >
+      Computes the daily equal‑weighted portfolio return by combining:
+      (1) daily log returns from stg_daily_stock_prices (using Close prices),
+      and (2) the monthly selected stocks from int_stocks_to_invest_by_month.
+      This model replicates the instructor’s Python logic for constructing
+      a monthly‑rebalanced equal‑weighted portfolio.
+    columns:
+      - name: date
+        description: "Trading date for the portfolio return."
+      - name: portfolio_return
+        description: "Equal‑weighted average of the selected stocks' daily log returns."
+  
+  - name: int_nasdaq_returns
+    description: >
+      Computes the daily log returns for the Nasdaq benchmark ETF (QQQ),
+      using the Close price. This model mirrors the instructor’s Python logic
+      for generating benchmark returns to compare against the strategy.
+    columns:
+      - name: date
+        description: "Trading date."
+      - name: nasdaq_return
+        description: "Daily log return of the Nasdaq-100 ETF (QQQ)."
