@@ -48,7 +48,7 @@ data/processed/sentiment.duckdb
 
 Full dbt DAG lineage:
 
-[](docs/dbt_DAG_lineage.png)
+![](docs/dbt_DAG_lineage.png)
 
 ### 📊 Final Output
 A Jupyter notebook visualizes:
@@ -67,7 +67,19 @@ The engagement‑ratio strategy demonstrated notable outperformance relative to 
 
 ---
 
-## Choice of tools
+## 🐳 Environment & Dependency Management
+
+This project is designed to be fully reproducible and isolated from the host machine. Two tools make this possible:
+
+### **Docker**
+By containerizing the project, all dependencies—Python, DuckDB, dbt, and system libraries—are guaranteed to behave the same way across machines.
+
+### **Poetry**
+Poetry is used for Python dependency management and virtual environment handling. It ensures that all Python packages are pinned, versioned, and installed in a controlled environment.
+
+Together, Docker and Poetry were the foundation for running the entire pipeline end‑to‑end with minimal setup effort.
+
+## Tools
 
 🦆 DuckDB Integration
 DuckDB is used as the analytical storage engine because it is:
@@ -136,3 +148,14 @@ Future work could include:
 • 	SPY
 • 	Equal‑weighted indices
 • 	Sector ETFs
+
+## 🙏 Credits & Learning Resources
+
+This project was inspired and supported by several excellent educational resources. Their tutorials and explanations were instrumental in shaping the ingestion pipeline, dbt models, and overall project structure.
+
+Special thanks to:
+
+- **The following YouTube channel** which provided clear guidance on integrating duckdb with dbt and best practices data engineering: https://www.youtube.com/@motherduckdb
+- **The following YouTube video** which helped me understand more about how to create a trading strategy based on social media engagement: https://www.youtube.com/watch?v=9Y3yaoi9rUQ&list=WL&index=98&t=8891s&pp=iAQBsAgC.
+
+These resources played a meaningful role in helping this project come together.
