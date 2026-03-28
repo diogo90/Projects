@@ -23,8 +23,6 @@ The data pipeline:
 
 ## 🏗️ Pipeline Structure
 
-Full pipeline architecture:
-
 ![](docs/pipeline_architecture.png)
 
 Ingestion → DuckDB → dbt Staging → dbt Intermediate → dbt Marts → Notebook
