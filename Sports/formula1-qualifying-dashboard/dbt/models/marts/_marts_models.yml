@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: best_laps_summary
+    description: "Mart model selecting the fastest qualifying lap per driver, per year, per track. Used for scatterplots such as Speed vs Lap Time."
+    columns:
+      - name: driver
+        description: "Three-letter driver code."
+
+      - name: team
+        description: "Team associated with the driver for that season."
+
+      - name: year
+        description: "Season year."
+
+      - name: track
+        description: "Circuit name."
+
+      - name: fastest_lap_time
+        description: "Driver's fastest qualifying lap time for the given year and track."
+
+      - name: fastest_lap_time_formatted
+        description: "Formatted fast lap time (MM:SS:MS) for display in dashboards."
+
+      - name: speed_on_fastest_lap
+        description: "Straight-line speed recorded on the fastest lap."
+
+      - name: session
+        description: "Qualifying session where the fastest lap occurred (Q1, Q2, Q3)."
+
+      - name: lap_delta
+        description: "Delta relative to reference or previous lap, taken from the fastest lap."

@@ -1,0 +1,11 @@
+
+    
+    
+    truncate table "f1"."main"."drivers_years";
+    -- dbt seed --
+    
+          COPY "f1"."main"."drivers_years" FROM '/workspaces/F1-Qualifying-Dashboard/dbt/seeds/drivers_years.csv' (FORMAT CSV, HEADER TRUE, DELIMITER ',')
+        
+
+;
+  

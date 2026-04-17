@@ -1,0 +1,36 @@
+{
+    // ----------------------------------------------------------------------
+    // VS Code Workspace Settings
+    //
+    // This file customizes how VS Code behaves for this specific project.
+    // It lives inside the `.vscode/` folder at the project root.
+    //
+    // WHY THIS FILE EXISTS:
+    // - VS Code needs help understanding our project structure.
+    // - The project uses a `src/` layout for the main package, but also
+    //   includes a top-level `ingestion/` folder that contains standalone
+    //   scripts. These scripts are not part of the Python package under `src/`.
+    //
+    // WHY WE ADD `python.analysis.extraPaths`:
+    // - VS Code's language server (Pylance) only treats `src/` as importable.
+    // - Our ingestion scripts import modules from the `ingestion/` folder.
+    // - At runtime this works because we execute the script directly, but
+    //   VS Code cannot resolve these imports without extra configuration.
+    //
+    // This setting tells VS Code:
+    //   "Also treat the project root as a valid import location."
+    //
+    // It does NOT affect:
+    // - Python's runtime behavior
+    // - Poetry environments
+    // - Packaging
+    // - Execution of scripts
+    //
+    // It ONLY improves editor intelligence (import resolution, autocomplete,
+    // linting, etc.) for our chosen folder structure.
+    // ----------------------------------------------------------------------
+
+    "python.analysis.extraPaths": [
+        "."
+    ]
+}

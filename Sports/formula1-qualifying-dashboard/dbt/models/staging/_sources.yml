@@ -1,0 +1,55 @@
+version: 2
+
+sources:
+  - name: f1_raw
+    description: "Raw qualifying lap data extracted from FastF1."
+    schema: main
+    tables:
+      - name: qualifying_laps
+        description: "One row per qualifying lap with basic timing and metadata."
+        columns:
+          - name: driver
+            description: "Driver name or code associated with the lap."
+            data_type: string
+            test:
+              - not_null
+
+          - name: session
+            description: "Session identifier, just a string with letter Q"
+            data_type: string
+            tests:
+              - not_null
+
+          - name: lap_time
+            description: "Lap time in seconds or formatted string depending on ingestion."
+            data_type: float
+            tests:
+              - not_null
+              - dbt_utils.accepted_range:
+                  arguments:
+                    min_value: 0
+                    inclusive: false   # strictly greater than 0
+
+          - name: speed
+            description: "Top speed or representative speed metric for the lap."
+            data_type: float
+            tests:
+              - not_null
+              - dbt_utils.accepted_range:
+                  arguments:
+                    min_value: 0
+                    inclusive: false   # strictly greater than 0
+
+          - name: year
+            description: "Season year."
+            data_type: integer
+
+          - name: round
+            description: "Championship round number."
+            data_type: integer
+
+          - name: track
+            description: "Track or Grand Prix name."
+            data_type: string
+            tests:
+              - not_null

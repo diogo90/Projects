@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: stg_qualifying_laps
+    description: "Staging model for qualifying lap data pulling from source which is the fastf1 API."
+    columns:
+      - name: driver
+        description: "Three-letter driver code."
+        tests:
+          - not_null
+
+      - name: session
+        description: "Session identifier (e.g., Q, Q1, Q2, Q3)."
+        tests:
+          - not_null
+
+      - name: lap_time
+        description: "Lap time in seconds."
+        tests:
+          - not_null
+
+      - name: speed
+        description: "Top speed or representative speed metric for the lap."
+        tests:
+          - not_null
+
+      - name: year
+        description: "Season year."
+
+      - name: round
+        description: "Championship round number."
+
+      - name: track
+        description: "Track or Grand Prix name."
+        tests:
+          - not_null

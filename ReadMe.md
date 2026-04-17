@@ -22,6 +22,7 @@ Current domains:
 |--------|-------------|----------------|
 | **Aviation** | Projects publicly available aviation data. | Flight traffic, Social Media tweets |
 | **Finance** | Projects focused on markets, pricing, risk, and market sentiment. | Quantitative Finance, Social Media Market Sentiment |
+| **Sports** | Projects focused on sports data | F1 FastAPI Analytics |
 | **More coming soon** | Additional domains will be added as the portfolio expands.
 
 ---
@@ -37,3 +38,7 @@ This domain currently includes two projects covering:
 This domain currently includes one project focused on:
 - Unsupervised Learning Trading Strategy
 - Twitter Sentiment Trading Strategy
+
+### **Sports**
+This domain currently includes one project focused on:
+- formula-1-qualifying-dashboard

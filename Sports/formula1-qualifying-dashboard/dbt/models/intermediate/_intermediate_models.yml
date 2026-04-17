@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: int_qualifying_laps_with_teams
+    description: "Intermediate model enriching qualifying lap data with team information based on driver and year."
+    columns:
+      - name: driver
+        description: "Three-letter driver code."
+        tests:
+          - not_null
+
+      - name: session
+        description: "Session identifier (e.g., Q, Q1, Q2, Q3)."
+        tests:
+          - not_null
+
+      - name: lap_time
+        description: "Lap time in seconds."
+        tests:
+          - not_null
+
+      - name: speed
+        description: "Top speed or representative speed metric for the lap."
+        tests:
+          - not_null
+
+      - name: year
+        description: "Season year."
+
+      - name: round
+        description: "Championship round number."
+
+      - name: track
+        description: "Track or Grand Prix name."
+        tests:
+          - not_null
+
+      - name: team
+        description: "Team (constructor) associated with the driver for the given season, derived via CASE mapping."
+        tests:
+          - not_null
+  
+  - name: int_dim_driver_team
+    description: "Intermediate dim model with driver's team lookup information."
+    columns:
+      - name: driver
+        description: "Three-letter driver code."
+
+      - name: year
+        description: "Year of racing."
+
+      - name: team 
+        description: "Case statement with team information."

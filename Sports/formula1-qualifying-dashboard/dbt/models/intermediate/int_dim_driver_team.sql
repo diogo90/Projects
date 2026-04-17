@@ -1,0 +1,180 @@
+-- ===============================================================
+-- Model: drivers_and_teams
+--
+-- Purpose:
+--   Provide a canonical mapping between each driver and the team
+--   they raced for in a given season. This model standardises team
+--   assignments across multiple years (2019–2023 and projected 2026)
+--   using an explicit CASE mapping. It ensures downstream models
+--   always have a reliable and consistent team value, regardless of
+--   mid‑season driver changes or differences in raw data sources.
+--
+-- Logic:
+--   - For each (driver, year) pair, assign the correct team name
+--     using a curated CASE statement.
+--   - Covers all drivers present in the dataset for the supported
+--     seasons, including mid‑season replacements and future 2026
+--     line‑ups.
+--
+-- Grain:
+--   One row per driver per year.
+--
+-- Upstream:
+--   - drivers_years (list of all driver–year combinations)
+--
+-- Downstream:
+--   - int_qualifying_laps_with_teams
+--   - best_laps_summary
+--   - Any model or dashboard requiring team‑level grouping or colour
+--     coding
+-- ===============================================================
+
+
+with drivers_and_teams as (
+
+    select 
+            driver,
+            year,
+            case
+            -- 2019
+            when driver = 'LEC' and year = 2019 then 'Ferrari'
+            when driver = 'VET' and year = 2019 then 'Ferrari'
+            when driver = 'GRO' and year = 2019 then 'Haas'
+            when driver = 'HUL' and year = 2019 then 'Renault'
+            when driver = 'MAG' and year = 2019 then 'Haas'
+            when driver = 'PER' and year = 2019 then 'Racing Point'
+            when driver = 'GAS' and year = 2019 then 'Red Bull'  -- started at Red Bull
+            when driver = 'HAM' and year = 2019 then 'Mercedes'
+            when driver = 'ALB' and year = 2019 then 'Toro Rosso' -- started at Toro Rosso
+            when driver = 'GIO' and year = 2019 then 'Alfa Romeo'
+            when driver = 'BOT' and year = 2019 then 'Mercedes'
+            when driver = 'KVY' and year = 2019 then 'Toro Rosso'
+            when driver = 'VER' and year = 2019 then 'Red Bull'
+            when driver = 'SAI' and year = 2019 then 'McLaren'
+            when driver = 'RIC' and year = 2019 then 'Renault'
+            when driver = 'STR' and year = 2019 then 'Racing Point'
+            when driver = 'KUB' and year = 2019 then 'Williams'
+            when driver = 'NOR' and year = 2019 then 'McLaren'
+            when driver = 'RAI' and year = 2019 then 'Alfa Romeo'
+            when driver = 'RUS' and year = 2019 then 'Williams'
+            -- 2020
+            when driver = 'STR' and year = 2020 then 'Racing Point'
+            when driver = 'AIT' and year = 2020 then 'AlphaTauri'
+            when driver = 'HAM' and year = 2020 then 'Mercedes'
+            when driver = 'ALB' and year = 2020 then 'Red Bull'
+            when driver = 'VET' and year = 2020 then 'Ferrari'
+            when driver = 'GIO' and year = 2020 then 'Alfa Romeo'
+            when driver = 'PER' and year = 2020 then 'Racing Point'
+            when driver = 'GAS' and year = 2020 then 'AlphaTauri'
+            when driver = 'MAG' and year = 2020 then 'Haas'
+            when driver = 'BOT' and year = 2020 then 'Mercedes'
+            when driver = 'KVY' and year = 2020 then 'AlphaTauri'
+            when driver = 'OCO' and year = 2020 then 'Renault'
+            when driver = 'NOR' and year = 2020 then 'McLaren'
+            when driver = 'RUS' and year = 2020 then 'Williams'
+            when driver = 'RAI' and year = 2020 then 'Alfa Romeo'
+            when driver = 'FIT' and year = 2020 then 'Haas'
+            when driver = 'LEC' and year = 2020 then 'Ferrari'
+            when driver = 'GRO' and year = 2020 then 'Haas'
+            when driver = 'LAT' and year = 2020 then 'Williams'
+            when driver = 'HUL' and year = 2020 then 'Racing Point'
+            when driver = 'VER' and year = 2020 then 'Red Bull'
+            when driver = 'SAI' and year = 2020 then 'McLaren'
+            when driver = 'RIC' and year = 2020 then 'Renault'
+            -- 2021
+            when driver = 'GAS' and year = 2021 then 'AlphaTauri'
+            when driver = 'PER' and year = 2021 then 'Red Bull'
+            when driver = 'LEC' and year = 2021 then 'Ferrari'
+            when driver = 'ALO' and year = 2021 then 'Alpine'
+            when driver = 'LAT' and year = 2021 then 'Williams'
+            when driver = 'MAZ' and year = 2021 then 'Haas'
+            when driver = 'STR' and year = 2021 then 'Aston Martin'
+            when driver = 'KUB' and year = 2021 then 'Alfa Romeo'
+            when driver = 'BOT' and year = 2021 then 'Mercedes'
+            when driver = 'OCO' and year = 2021 then 'Alpine'
+            when driver = 'NOR' and year = 2021 then 'McLaren'
+            when driver = 'RAI' and year = 2021 then 'Alfa Romeo'
+            when driver = 'RUS' and year = 2021 then 'Williams'
+            when driver = 'MSC' and year = 2021 then 'Haas'
+            when driver = 'VER' and year = 2021 then 'Red Bull'
+            when driver = 'RIC' and year = 2021 then 'McLaren'
+            when driver = 'SAI' and year = 2021 then 'Ferrari'
+            when driver = 'TSU' and year = 2021 then 'AlphaTauri'
+            when driver = 'HAM' and year = 2021 then 'Mercedes'
+            when driver = 'GIO' and year = 2021 then 'Alfa Romeo'
+            when driver = 'VET' and year = 2021 then 'Aston Martin'
+            -- 2022
+            when driver = 'RUS' and year = 2022 then 'Mercedes'
+            when driver = 'MSC' and year = 2022 then 'Haas'
+            when driver = 'NOR' and year = 2022 then 'McLaren'
+            when driver = 'BOT' and year = 2022 then 'Alfa Romeo'
+            when driver = 'OCO' and year = 2022 then 'Alpine'
+            when driver = 'LEC' and year = 2022 then 'Ferrari'
+            when driver = 'ALO' and year = 2022 then 'Alpine'
+            when driver = 'HUL' and year = 2022 then 'Aston Martin'
+            when driver = 'LAT' and year = 2022 then 'Williams'
+            when driver = 'DEV' and year = 2022 then 'Williams'
+            when driver = 'VER' and year = 2022 then 'Red Bull'
+            when driver = 'SAI' and year = 2022 then 'Ferrari'
+            when driver = 'ZHO' and year = 2022 then 'Alfa Romeo'
+            when driver = 'TSU' and year = 2022 then 'AlphaTauri'
+            when driver = 'RIC' and year = 2022 then 'McLaren'
+            when driver = 'PER' and year = 2022 then 'Red Bull'
+            when driver = 'MAG' and year = 2022 then 'Haas'
+            when driver = 'GAS' and year = 2022 then 'AlphaTauri'
+            when driver = 'ALB' and year = 2022 then 'Williams'
+            when driver = 'HAM' and year = 2022 then 'Mercedes'
+            when driver = 'VET' and year = 2022 then 'Aston Martin'
+            when driver = 'STR' and year = 2022 then 'Aston Martin'
+            -- 2023
+            when driver = 'HAM' and year = 2023 then 'Mercedes'
+            when driver = 'ALB' and year = 2023 then 'Williams'
+            when driver = 'LAW' and year = 2023 then 'AlphaTauri'
+            when driver = 'STR' and year = 2023 then 'Aston Martin'
+            when driver = 'SAR' and year = 2023 then 'Williams'
+            when driver = 'PIA' and year = 2023 then 'McLaren'
+            when driver = 'RUS' and year = 2023 then 'Mercedes'
+            when driver = 'NOR' and year = 2023 then 'McLaren'
+            when driver = 'LEC' and year = 2023 then 'Ferrari'
+            when driver = 'ALO' and year = 2023 then 'Aston Martin'
+            when driver = 'HUL' and year = 2023 then 'Haas'
+            when driver = 'DEV' and year = 2023 then 'AlphaTauri'
+            when driver = 'OCO' and year = 2023 then 'Alpine'
+            when driver = 'BOT' and year = 2023 then 'Alfa Romeo'
+            when driver = 'GAS' and year = 2023 then 'Alpine'
+            when driver = 'VER' and year = 2023 then 'Red Bull'
+            when driver = 'SAI' and year = 2023 then 'Ferrari'
+            when driver = 'ZHO' and year = 2023 then 'Alfa Romeo'
+            when driver = 'TSU' and year = 2023 then 'AlphaTauri'
+            when driver = 'RIC' and year = 2023 then 'AlphaTauri'
+            when driver = 'PER' and year = 2023 then 'Red Bull'
+            when driver = 'MAG' and year = 2023 then 'Haas'
+            -- 2026
+            when driver = 'RUS' and year = 2026 then 'Mercedes'
+            when driver = 'ANT' and year = 2026 then 'Mercedes'
+            when driver = 'LEC' and year = 2026 then 'Ferrari'
+            when driver = 'HAM' and year = 2026 then 'Ferrari'
+            when driver = 'NOR' and year = 2026 then 'McLaren'
+            when driver = 'PIA' and year = 2026 then 'McLaren'
+            when driver = 'OCO' and year = 2026 then 'Haas F1 Team'
+            when driver = 'BEA' and year = 2026 then 'Haas F1 Team'
+            when driver = 'GAS' and year = 2026 then 'Alpine'
+            when driver = 'COL' and year = 2026 then 'Alpine'
+            when driver = 'VER' and year = 2026 then 'Red Bull Racing'
+            when driver = 'HAD' and year = 2026 then 'Red Bull Racing'
+            when driver = 'LAW' and year = 2026 then 'Racing Bulls'
+            when driver = 'LIN' and year = 2026 then 'Racing Bulls'
+            when driver = 'HUL' and year = 2026 then 'Audi'
+            when driver = 'BOR' and year = 2026 then 'Audi'
+            when driver = 'SAI' and year = 2026 then 'Williams'
+            when driver = 'ALB' and year = 2026 then 'Williams'
+            when driver = 'PER' and year = 2026 then 'Cadillac'
+            when driver = 'BOT' and year = 2026 then 'Cadillac'
+            when driver = 'ALO' and year = 2026 then 'Aston Martin'
+            when driver = 'STR' and year = 2026 then 'Aston Martin'
+        end as team
+    
+    from {{ ref('drivers_years') }}
+
+)
+select * from drivers_and_teams
