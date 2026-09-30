@@ -30,15 +30,15 @@ Current domains:
 ## ✈️ Current Projects
 
 ### **Aviation**
-This domain currently includes two projects covering:
+This domain currently includes projects covering:
 - Airline Traffic Exploratory Analysis  
 - Airline Tweets Data Visualization Analysis  
 
 ### **Finance**
-This domain currently includes one project focused on:
+This domain currently includes projects focused on:
 - Unsupervised Learning Trading Strategy
 - Twitter Sentiment Trading Strategy
 
 ### **Sports**
-This domain currently includes one project focused on:
-- formula-1-qualifying-dashboard
+This domain currently includes projects focused on:
+- Formula 1 Qualifying Dashboard
