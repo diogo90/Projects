@@ -1,0 +1,18 @@
+# Source trip files: ~570 MB of parquet (HVFHV alone is ~490 MB, above GitHub's
+# 100 MB file limit). Download them from the TLC website (see datasets/README.md).
+datasets/source_tlc/*.parquet
+
+# Landing zone output, if pointed inside the repo
+landing/
+_duckdb_spill/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/

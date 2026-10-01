@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NYC TLC Data Architecture</title>
+<style>
+  :root {
+    --bg: #f6f5f1;
+    --panel: #ffffff;
+    --ink: #1c2230;
+    --muted: #5d6677;
+    --hair: #dcdfe5;
+    --source: #2f6f8f;   --source-bg: #e6f1f6;
+    --process: #4b5563;  --process-bg: #eef0f3;
+    --bronze: #9a5a24;   --bronze-bg: #f7ebe0;
+    --silver: #56657a;   --silver-bg: #edf0f5;
+    --gold: #9a7400;     --gold-bg: #fbf2d6;
+    --consume: #2d7a55;  --consume-bg: #e5f3ec;
+    --etl: #6b4fa0;      --etl-bg: #f0ebf8;
+    --arrow: #9aa1ad;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #13161c; --panel: #1b1f27; --ink: #e8eaef; --muted: #a2a9b6; --hair: #2e3440;
+      --source: #7fb8d6;  --source-bg: #1a2a33;
+      --process: #b4bcc8; --process-bg: #232830;
+      --bronze: #e0a36e;  --bronze-bg: #2e2219;
+      --silver: #b3bfd0;  --silver-bg: #222833;
+      --gold: #e6c14f;    --gold-bg: #2d2714;
+      --consume: #7fcca5; --consume-bg: #17291f;
+      --etl: #b9a3e3;     --etl-bg: #251f33;
+      --arrow: #5c6472;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #13161c; --panel: #1b1f27; --ink: #e8eaef; --muted: #a2a9b6; --hair: #2e3440;
+    --source: #7fb8d6;  --source-bg: #1a2a33;
+    --process: #b4bcc8; --process-bg: #232830;
+    --bronze: #e0a36e;  --bronze-bg: #2e2219;
+    --silver: #b3bfd0;  --silver-bg: #222833;
+    --gold: #e6c14f;    --gold-bg: #2d2714;
+    --consume: #7fcca5; --consume-bg: #17291f;
+    --etl: #b9a3e3;     --etl-bg: #251f33;
+    --arrow: #5c6472;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 1440px; margin: 0 auto; padding: 32px 16px 48px; }
+  header h1 { font-size: 24px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  header p { margin: 0; color: var(--muted); max-width: 760px; }
+
+  .flow {
+    display: grid;
+    grid-template-columns: minmax(170px, 1fr) 28px minmax(170px, 1fr) 28px minmax(150px, 0.9fr) 28px minmax(560px, 3.4fr) 28px minmax(170px, 1fr);
+    align-items: stretch; margin-top: 28px;
+  }
+  .arrow { display: flex; align-items: center; justify-content: center; color: var(--arrow); }
+  .arrow svg { width: 22px; height: 22px; }
+
+  .stage {
+    background: var(--panel); border: 1px solid var(--hair); border-radius: 12px;
+    padding: 14px; display: flex; flex-direction: column; gap: 10px;
+    border-top: 4px solid var(--c);
+  }
+  .stage > h2 {
+    margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--c);
+  }
+  .stage > .sub { margin: -6px 0 0; font-size: 12px; color: var(--muted); }
+  .item {
+    background: var(--cbg); border-radius: 8px; padding: 8px 10px; font-size: 13px;
+  }
+  .item b { display: block; font-weight: 600; }
+  .item span { color: var(--muted); font-size: 12px; }
+  .item code, .item span { overflow-wrap: anywhere; }
+  .item code { display: block; }
+  .flow > *, .layers > * { min-width: 0; }
+  .source  { --c: var(--source);  --cbg: var(--source-bg); }
+  .process { --c: var(--process); --cbg: var(--process-bg); }
+  .consume { --c: var(--consume); --cbg: var(--consume-bg); }
+
+  .dwh { border-top-color: var(--ink); --c: var(--ink); }
+  .layers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .layer { border-radius: 10px; padding: 12px; background: var(--lbg); border: 1px solid var(--hair); }
+  .layer h3 { margin: 0 0 2px; font-size: 16px; color: var(--l); }
+  .layer .tag { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .layer dl { margin: 0; display: grid; gap: 6px; }
+  .layer dt { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--l); }
+  .layer dd { margin: 0; font-size: 12.5px; }
+  .bronze { --l: var(--bronze); --lbg: var(--bronze-bg); }
+  .silver { --l: var(--silver); --lbg: var(--silver-bg); }
+  .gold   { --l: var(--gold);   --lbg: var(--gold-bg); }
+  .etl {
+    background: var(--etl-bg); border-radius: 10px; padding: 10px 12px; font-size: 12.5px;
+    display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline;
+  }
+  .etl strong { color: var(--etl); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+  .etl code, .item code, .layer code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 12px; }
+
+  .legend { margin-top: 28px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+  .card { background: var(--panel); border: 1px solid var(--hair); border-radius: 12px; padding: 14px 16px; }
+  .card h4 { margin: 0 0 8px; font-size: 13px; }
+  .card table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .card td { padding: 4px 0; border-top: 1px solid var(--hair); vertical-align: top; }
+  .card td:first-child { color: var(--muted); padding-right: 10px; white-space: nowrap; }
+
+  @media (max-width: 1100px) {
+    .flow { grid-template-columns: 1fr; }
+    .arrow { height: 28px; }
+    .arrow svg { transform: rotate(90deg); }
+    .layers { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>NYC TLC Data Warehouse: High-Level Architecture</h1>
+    <p>Medallion architecture on SQL Server Express. Six sources are pulled and parsed into a landing zone, bulk-loaded into Bronze, cleansed and conformed in Silver, and modelled as a star schema in Gold. All three layers are orchestrated and audited from the <code>etl</code> schema.</p>
+  </header>
+
+  <section class="flow" aria-label="Architecture flow">
+    <!-- Sources -->
+    <div class="stage source">
+      <h2>Sources</h2>
+      <p class="sub">6 source systems, January 2025</p>
+      <div class="item"><b>Yellow taxi</b><span>Parquet · 3.48M trips</span></div>
+      <div class="item"><b>Green taxi</b><span>Parquet · 48K trips</span></div>
+      <div class="item"><b>FHV</b><span>Parquet · 1.90M trips</span></div>
+      <div class="item"><b>HVFHV (Uber, Lyft)</b><span>Parquet · 20.4M trips</span></div>
+      <div class="item"><b>TLC reference</b><span>CSV · zones + dictionary codes</span></div>
+      <div class="item"><b>Open-Meteo API</b><span>JSON · hourly weather</span></div>
+    </div>
+
+    <div class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+
+    <!-- Extract & parse -->
+    <div class="stage process">
+      <h2>Extract &amp; Parse</h2>
+      <p class="sub">Python + DuckDB</p>
+      <div class="item"><b>Pull extraction</b><span>Weather API call for the reporting month</span></div>
+      <div class="item"><b>Schema contract</b><span>Fails on column drift before loading</span></div>
+      <div class="item"><b>File parsing</b><span>Parquet / CSV to uniform UTF-8 CSV (SQL Server cannot read local Parquet)</span></div>
+      <div class="item"><b>Manifest</b><span>Row count per file, used to reconcile Bronze</span></div>
+      <div class="item"><code>extract_sources.py</code></div>
+    </div>
+
+    <div class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+
+    <!-- Landing -->
+    <div class="stage process">
+      <h2>Landing Zone</h2>
+      <p class="sub">File system</p>
+      <div class="item"><b>7 CSV files</b><span>one per source entity</span></div>
+      <div class="item"><b>_manifest.csv</b><span>written last = batch complete</span></div>
+      <div class="item"><code>C:\sql\nyc_tlc_dwh\landing</code><span>readable by the SQL Server service account</span></div>
+    </div>
+
+    <div class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+
+    <!-- Data warehouse -->
+    <div class="stage dwh">
+      <h2>SQL Server Express · nyc_tlc_dwh</h2>
+      <div class="layers">
+        <div class="layer bronze">
+          <h3>Bronze</h3>
+          <div class="tag">Raw data</div>
+          <dl>
+            <dt>Object type</dt><dd>Tables (source names and order kept)</dd>
+            <dt>Load</dt><dd>Batch · full load · truncate &amp; insert · <code>BULK INSERT</code></dd>
+            <dt>Transformations</dt><dd>None (as-is)</dd>
+            <dt>Storage</dt><dd>Clustered columnstore on big trip tables</dd>
+            <dt>Controls</dt><dd>Manifest row-count reconciliation, <code>MAXERRORS = 0</code></dd>
+          </dl>
+        </div>
+        <div class="layer silver">
+          <h3>Silver</h3>
+          <div class="tag">Cleansed &amp; conformed</div>
+          <dl>
+            <dt>Object type</dt><dd>Tables</dd>
+            <dt>Load</dt><dd>Batch · full load · truncate &amp; insert</dd>
+            <dt>Transformations</dt><dd>Cleansing, standardisation, conformed names, typing, de-duplication, derived columns, DQ flags</dd>
+            <dt>Storage</dt><dd>Columnstore trips · PK on reference tables</dd>
+            <dt>Controls</dt><dd>Rows flagged, not deleted (<code>dq_flags</code>)</dd>
+          </dl>
+        </div>
+        <div class="layer gold">
+          <h3>Gold</h3>
+          <div class="tag">Business-ready</div>
+          <dl>
+            <dt>Object type</dt><dd>Tables (materialised star schema)</dd>
+            <dt>Load</dt><dd>Facts: truncate &amp; insert · Dimensions: SCD Type 1 upsert</dd>
+            <dt>Transformations</dt><dd>Integration of 4 feeds, surrogate keys, business logic, aggregation</dd>
+            <dt>Data model</dt><dd>9 conformed dimensions · 2 facts (trip + hourly)</dd>
+            <dt>Controls</dt><dd>Trusted FKs, Silver-to-Gold reconciliation</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="etl">
+        <strong>etl schema</strong>
+        <span><code>run_pipeline</code> one batch id per run</span>
+        <span><code>load_log</code> rows, duration, errors (TRY…CATCH)</span>
+        <span><code>file_manifest</code> landing contract</span>
+        <span><code>dq_rule</code> quality rule catalogue</span>
+      </div>
+      <div class="etl">
+        <strong>tests</strong>
+        <span><code>quality_checks_silver.sql</code></span>
+        <span><code>quality_checks_gold.sql</code></span>
+        <span>PASS / WARN / FAIL report · THROW on failure</span>
+      </div>
+    </div>
+
+    <div class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+
+    <!-- Consumers -->
+    <div class="stage consume">
+      <h2>Consume</h2>
+      <p class="sub">Gold layer only</p>
+      <div class="item"><b>BI &amp; reporting</b><span>Power BI / Tableau on the star schema</span></div>
+      <div class="item"><b>Ad-hoc SQL analytics</b><span><code>analyses/business_questions.sql</code></span></div>
+      <div class="item"><b>Dashboards at scale</b><span><code>fact_trips_hourly</code> aggregate</span></div>
+      <div class="item"><b>Data science</b><span>demand, pricing and weather features</span></div>
+    </div>
+  </section>
+
+  <section class="legend">
+    <div class="card">
+      <h4>ETL techniques used</h4>
+      <table>
+        <tr><td>Extraction</td><td>Pull extraction · full extract · file parsing</td></tr>
+        <tr><td>Processing</td><td>Batch processing (one batch id per run)</td></tr>
+        <tr><td>Load</td><td>Full load: truncate &amp; insert (atomic, per table)</td></tr>
+        <tr><td>History</td><td>SCD Type 1 (overwrite)</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>Why this is safe to re-run</h4>
+      <table>
+        <tr><td>Atomic loads</td><td>Truncate + insert share one transaction; a failure rolls back to the previous data</td></tr>
+        <tr><td>Stable keys</td><td>Dimensions are upserted, so surrogate keys never change between runs</td></tr>
+        <tr><td>Fail loudly</td><td>Errors are logged, then re-raised with <code>THROW</code></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>Sizing (January 2025)</h4>
+      <table>
+        <tr><td>Rows</td><td>25.8M trips across 4 feeds</td></tr>
+        <tr><td>Landing CSV</td><td>3.8 GB</td></tr>
+        <tr><td>HVFHV in Bronze</td><td>3.3 GB CSV to 0.77 GB (columnstore)</td></tr>
+      </table>
+    </div>
+  </section>
+</main>
+</body>
+</html>

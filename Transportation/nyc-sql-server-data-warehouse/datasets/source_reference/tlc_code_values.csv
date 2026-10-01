@@ -1,0 +1,29 @@
+code_type,code,code_description,code_group,source_document
+service_type,yellow,Yellow Taxi,Taxi,trip_record_user_guide.pdf
+service_type,green,Green Taxi (Street Hail Livery),Taxi,trip_record_user_guide.pdf
+service_type,fhv,For-Hire Vehicle,For-Hire Vehicle,trip_record_user_guide.pdf
+service_type,fhvhv,High-Volume For-Hire Vehicle,For-Hire Vehicle,trip_record_user_guide.pdf
+vendor,1,"Creative Mobile Technologies, LLC",Taxi Technology Provider,data_dictionary_trip_records_yellow.pdf
+vendor,2,"Curb Mobility, LLC",Taxi Technology Provider,data_dictionary_trip_records_yellow.pdf
+vendor,6,Myle Technologies Inc,Taxi Technology Provider,data_dictionary_trip_records_yellow.pdf
+vendor,7,Helix,Taxi Technology Provider,data_dictionary_trip_records_yellow.pdf
+vendor,HV0002,Juno,High-Volume FHV Company,data_dictionary_trip_records_hvfhs.pdf
+vendor,HV0003,Uber,High-Volume FHV Company,data_dictionary_trip_records_hvfhs.pdf
+vendor,HV0004,Via,High-Volume FHV Company,data_dictionary_trip_records_hvfhs.pdf
+vendor,HV0005,Lyft,High-Volume FHV Company,data_dictionary_trip_records_hvfhs.pdf
+rate_code,1,Standard rate,Metered,data_dictionary_trip_records_yellow.pdf
+rate_code,2,JFK,Flat Rate,data_dictionary_trip_records_yellow.pdf
+rate_code,3,Newark,Metered,data_dictionary_trip_records_yellow.pdf
+rate_code,4,Nassau or Westchester,Metered,data_dictionary_trip_records_yellow.pdf
+rate_code,5,Negotiated fare,Negotiated,data_dictionary_trip_records_yellow.pdf
+rate_code,6,Group ride,Metered,data_dictionary_trip_records_yellow.pdf
+rate_code,99,Null/unknown,Unknown,data_dictionary_trip_records_yellow.pdf
+payment_type,0,Flex Fare trip,Paid,data_dictionary_trip_records_yellow.pdf
+payment_type,1,Credit card,Paid,data_dictionary_trip_records_yellow.pdf
+payment_type,2,Cash,Paid,data_dictionary_trip_records_yellow.pdf
+payment_type,3,No charge,Not Paid,data_dictionary_trip_records_yellow.pdf
+payment_type,4,Dispute,Not Paid,data_dictionary_trip_records_yellow.pdf
+payment_type,5,Unknown,Unknown,data_dictionary_trip_records_yellow.pdf
+payment_type,6,Voided trip,Not Paid,data_dictionary_trip_records_yellow.pdf
+trip_type,1,Street-hail,Street-hail,data_dictionary_trip_records_green.pdf
+trip_type,2,Dispatch,Dispatch,data_dictionary_trip_records_green.pdf
