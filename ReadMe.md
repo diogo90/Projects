@@ -20,10 +20,10 @@ Current domains:
 
 | Domain | Description | Example Topics |
 |--------|-------------|----------------|
-| **Aviation** | Projects publicly available aviation data. | Flight traffic, Social Media tweets |
+| **Aviation** | Projects leveraging publicly available aviation data. | Flight traffic, Social Media tweets |
 | **Finance** | Projects focused on markets, pricing, risk, and market sentiment. | Quantitative Finance, Social Media Market Sentiment |
-| **Sports** | Projects focused on sports data | F1 FastAPI Analytics |
-| **More coming soon** | Additional domains will be added as the portfolio expands.
+| **Sports** | Projects focused on sports data. | F1 FastAPI Analytics |
+| **Transportation** | Projects leveraging public transportation data. | NYC Taxi & Ride-Hailing SQL Server Data Warehouse
 
 ---
 
@@ -42,3 +42,7 @@ This domain currently includes projects focused on:
 ### **Sports**
 This domain currently includes projects focused on:
 - Formula 1 Qualifying Dashboard
+
+### **Transportation**
+This domain currently includes projects focused on:
+- NYC Taxi & Ride-hailing SQL Server Data Warehouse
