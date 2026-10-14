@@ -21,7 +21,7 @@ Current domains:
 | Domain | Description | Example Topics |
 |--------|-------------|----------------|
 | **Aviation** | Projects leveraging publicly available aviation data. | Flight traffic, Social Media tweets |
-| **Finance** | Projects focused on markets, pricing, risk, and market sentiment. | Quantitative Finance, Social Media Market Sentiment | Snowflake Fundamental Valiation Pipeline
+| **Finance** | Projects focused on markets, pricing, risk, and market sentiment. | Quantitative Finance, Social Media Market Sentiment | Snowflake Fundamental Valiation Pipeline |
 | **Sports** | Projects focused on sports data. | F1 FastAPI Analytics |
 | **Transportation** | Projects leveraging public transportation data. | NYC Taxi & Ride-Hailing SQL Server Data Warehouse
 
