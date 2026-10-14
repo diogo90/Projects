@@ -87,7 +87,7 @@ The project demonstrates, in one coherent pipeline:
 | **dbt Projects on Snowflake** | Tested analytics marts on top of the gold layer, run by a task | `dbt/`, `07_dbt/` |
 | **Git repository** (optional) | Deploy SQL, Python and dbt straight from GitHub | `00_setup/04_git_integration_optional.sql` |
 | **RBAC** | `VALUATION_PIPELINE` (owner/runner) and `VALUATION_ANALYST` (read-only) | `00_setup/01_roles_database_schemas.sql` |
-| **Time Travel / zero-copy clone** | Recovery and dev copies of the permanent gold layer | (demo in guide 2) |
+| **Time Travel / zero-copy clone** | Recovery and dev copies of the permanent gold layer | Gold zone tables are PERMANENT (Time Travel enabled) |
 
 ![Task graph](docs/images/task_graph.png)
 
@@ -124,7 +124,7 @@ dbt tests: `unique`, `not_null`, `relationships`, `accepted_values`, custom gene
 
 ## 6. Design decisions
 
-The full reasoning, written for interview preparation, is in **[Guide 1: Concepts & Design Decisions (PDF)](docs/guides/01_Snowflake_Concepts_and_Design_Decisions.pdf)**. The key decisions in brief:
+The key decisions in brief:
 
 ### 6.1 Zones
 `LANDING` (bronze, as delivered + lineage) -> `CURATED` (silver, typed, validated, de-duplicated, conformed) -> `CONSUMPTION` (gold, star schema + business rules) -> `ANALYTICS` (dbt marts). `OPS` holds procedures, tasks, logs and DQ results.
@@ -173,8 +173,6 @@ Every task just `CALL`s a procedure. The logic is versioned in one place (`snowf
 
 **Guardrails:** XS warehouses with 60 s auto-suspend and statement timeouts; resource monitors (account 10 credits, project 6 credits; notify, suspend, then suspend immediately); an account budget (12 credits, covering serverless); and a task graph with **no schedule**. Monitoring queries over `ACCOUNT_USAGE` (metering, pipe usage, query attribution, storage) and `INFORMATION_SCHEMA` (tasks, copy history) are in `snowflake/05_monitoring/`.
 
-Details and the "what could make it expensive" list: **[Guide 3: Cost Estimate & Resource Monitoring (PDF)](docs/guides/03_Cost_Estimate_and_Resource_Monitoring.pdf)**.
-
 ## 9. Repository structure
 
 ```
@@ -204,13 +202,12 @@ Details and the "what could make it expensive" list: **[Guide 3: Cost Estimate &
 │   └── 99_teardown.sql
 ├── dbt/fundamental_valuation/            # dbt project (sources = CONSUMPTION, marts = ANALYTICS)
 └── docs/
-    ├── guides/                           # 3 PDF guides (concepts, step-by-step, cost)
     └── images/                           # diagrams used in this README
 ```
 
 ## 10. How to run it
 
-The full walkthrough with expected row counts and checks is **[Guide 2: Step-by-Step Implementation (PDF)](docs/guides/02_Step_by_Step_Implementation_Guide.pdf)**. In short:
+In short:
 
 0. **Generate the market data locally** (Yahoo Finance data is not included in the repo):
    ```bash
