@@ -1,0 +1,34 @@
+version: 2
+
+sources:
+  - name: consumption
+    description: Gold star schema built by OPS.SP_BUILD_CONSUMPTION (Snowflake stored procedure).
+    database: VALUATION_DB
+    schema: CONSUMPTION
+    tables:
+      - name: dim_company
+        description: One row per company in the 50-ticker universe (SCD1).
+        columns:
+          - name: company_key
+            data_tests: [unique, not_null]
+          - name: ticker
+            data_tests: [unique, not_null]
+      - name: dim_date
+        description: Shared calendar dimension.
+        columns:
+          - name: date_key
+            data_tests: [unique, not_null]
+      - name: fct_daily_prices
+        description: Daily OHLCV with moving averages, volatility and 52-week range.
+        columns:
+          - name: company_key
+            data_tests:
+              - relationships:
+                  to: source('consumption', 'dim_company')
+                  field: company_key
+          - name: close_price
+            data_tests: [not_null, positive_value]
+      - name: fct_fundamentals_quarterly
+        description: Discrete fiscal quarters with TTM roll-ups (as first reported, split-adjusted EPS).
+      - name: fct_daily_valuation
+        description: Point-in-time daily valuation multiples (ASOF join on filing date).

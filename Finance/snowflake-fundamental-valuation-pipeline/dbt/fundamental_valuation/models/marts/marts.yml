@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: mart_valuation_snapshot
+    description: >
+      Relative-value screen on the latest trading day. P/E vs the company's own
+      3-year range and vs its sector median, plus momentum and risk context.
+    columns:
+      - name: ticker
+        data_tests: [unique, not_null]
+      - name: close_price
+        data_tests: [not_null, positive_value]
+      - name: pe_percentile_3y
+        description: Percentile (0-1) of today's P/E within the company's trailing 3-year P/E history.
+      - name: valuation_signal
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['CHEAP_VS_OWN_HISTORY', 'RICH_VS_OWN_HISTORY', 'WITHIN_NORMAL_RANGE', 'NOT_MEANINGFUL']
+
+  - name: mart_sector_valuation_daily
+    description: Median valuation, leverage and growth per sector per trading day.
+    data_tests:
+      - unique_combination:
+          columns: ['trade_date', 'sector_theme']
+    columns:
+      - name: trade_date
+        data_tests: [not_null]
+      - name: sector_theme
+        data_tests:
+          - accepted_values:
+              values: ['Technology & AI Infrastructure', 'Financials & Credit Payments',
+                       'Energy, Industrials & Transport', 'Consumer Cyclical & E-Commerce',
+                       'Consumer Defensive & Healthcare']
+
+  - name: mart_earnings_reaction
+    description: >
+      Event study: stock return 1 and 5 trading days after each 10-Q/10-K filing,
+      raw and in excess of the equal-weighted universe.
+    data_tests:
+      - unique_combination:
+          columns: ['ticker', 'fiscal_quarter_end']
+    columns:
+      - name: t0_date
+        description: Last trading day on or before the filing date (event anchor).

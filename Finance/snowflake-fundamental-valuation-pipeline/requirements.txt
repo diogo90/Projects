@@ -1,0 +1,10 @@
+# Local extraction (runs on your machine, before anything reaches Snowflake)
+yfinance>=1.0
+pandas>=2.2
+
+# Optional: scripted upload to the Snowflake stages (ingestion/upload_to_stage.py)
+snowflake-connector-python>=3.12
+
+# Not needed locally (provided inside Snowflake):
+#   snowflake-snowpark-python  - Snowpark stored procedure runtime (PACKAGES clause)
+#   dbt-core / dbt-snowflake   - dbt Projects on Snowflake runs dbt natively

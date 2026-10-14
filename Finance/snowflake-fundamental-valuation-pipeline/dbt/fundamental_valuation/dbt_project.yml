@@ -1,0 +1,25 @@
+name: fundamental_valuation
+version: "1.0.0"
+config-version: 2
+profile: fundamental_valuation
+
+model-paths: ["models"]
+test-paths: ["tests"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+# dbt sits on top of the CONSUMPTION (gold) star schema built by Snowflake
+# stored procedures, and produces analyst-facing marts in the ANALYTICS schema.
+# Ingestion, CDC and the heavy transforms stay native (Snowpipe, Streams,
+# Tasks, Snowpark). dbt adds what it is best at: modular SQL marts, tests,
+# documentation and lineage.
+models:
+  fundamental_valuation:
+    marts:
+      +materialized: table
+      +transient: false
+      +tags: ["marts"]
+
+tests:
+  fundamental_valuation:
+    +severity: error

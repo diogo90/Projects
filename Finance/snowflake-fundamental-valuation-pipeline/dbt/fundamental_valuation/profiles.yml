@@ -1,0 +1,25 @@
+# dbt Projects on Snowflake runs dbt INSIDE Snowflake with the caller's
+# session, so no credentials are stored here: account/user are ignored.
+fundamental_valuation:
+  target: prod
+  outputs:
+    prod:
+      type: snowflake
+      account: ""
+      user: ""
+      role: VALUATION_PIPELINE
+      warehouse: WH_TRANSFORM
+      database: VALUATION_DB
+      schema: ANALYTICS
+      threads: 4
+    # Optional: run locally with dbt-core + dbt-snowflake (pip install dbt-snowflake)
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT', '') }}"
+      user: "{{ env_var('SNOWFLAKE_USER', '') }}"
+      authenticator: externalbrowser
+      role: VALUATION_PIPELINE
+      warehouse: WH_TRANSFORM
+      database: VALUATION_DB
+      schema: ANALYTICS_DEV
+      threads: 4

@@ -1,0 +1,52 @@
+ticker,company_name,cik,cik_role,sector_theme
+AAPL,Apple Inc.,0000320193,primary,Technology & AI Infrastructure
+MSFT,Microsoft Corp,0000789019,primary,Technology & AI Infrastructure
+NVDA,NVIDIA Corp,0001045810,primary,Technology & AI Infrastructure
+GOOGL,Alphabet Inc.,0001652044,primary,Technology & AI Infrastructure
+META,Meta Platforms,0001326801,primary,Technology & AI Infrastructure
+AVGO,Broadcom Inc.,0001730168,primary,Technology & AI Infrastructure
+AMD,Advanced Micro Devices,0000002488,primary,Technology & AI Infrastructure
+ORCL,Oracle Corp,0001341439,primary,Technology & AI Infrastructure
+CRM,Salesforce Inc.,0001108524,primary,Technology & AI Infrastructure
+INTC,Intel Corp,0000050863,primary,Technology & AI Infrastructure
+QCOM,QUALCOMM Inc.,0000804328,primary,Technology & AI Infrastructure
+CSCO,Cisco Systems,0000858877,primary,Technology & AI Infrastructure
+ADBE,Adobe Inc.,0000796343,primary,Technology & AI Infrastructure
+JPM,JPMorgan Chase,0000019617,primary,Financials & Credit Payments
+BAC,Bank of America,0000070858,primary,Financials & Credit Payments
+WFC,Wells Fargo,0000072971,primary,Financials & Credit Payments
+MS,Morgan Stanley,0000895421,primary,Financials & Credit Payments
+GS,Goldman Sachs,0000886982,primary,Financials & Credit Payments
+V,Visa Inc.,0001403161,primary,Financials & Credit Payments
+MA,Mastercard Inc.,0001141391,primary,Financials & Credit Payments
+AXP,American Express,0000004962,primary,Financials & Credit Payments
+XOM,ExxonMobil Holdings Corp,0002115436,primary,"Energy, Industrials & Transport"
+XOM,Exxon Mobil Corp,0000034088,predecessor,"Energy, Industrials & Transport"
+CVX,Chevron Corp,0000093410,primary,"Energy, Industrials & Transport"
+CAT,Caterpillar Inc.,0000018230,primary,"Energy, Industrials & Transport"
+GE,General Electric Aerospace,0000040545,primary,"Energy, Industrials & Transport"
+HON,Honeywell International,0000773840,primary,"Energy, Industrials & Transport"
+UNP,Union Pacific Corp,0000100885,primary,"Energy, Industrials & Transport"
+UPS,United Parcel Service,0001090727,primary,"Energy, Industrials & Transport"
+DE,John Deere & Co,0000315189,primary,"Energy, Industrials & Transport"
+LMT,Lockheed Martin,0000936468,primary,"Energy, Industrials & Transport"
+RTX,RTX Corp,0000101829,primary,"Energy, Industrials & Transport"
+AMZN,Amazon.com Inc.,0001018724,primary,Consumer Cyclical & E-Commerce
+TSLA,Tesla Inc.,0001318605,primary,Consumer Cyclical & E-Commerce
+HD,Home Depot,0000354950,primary,Consumer Cyclical & E-Commerce
+NKE,Nike Inc.,0000320187,primary,Consumer Cyclical & E-Commerce
+MCD,McDonald's Corp,0000063908,primary,Consumer Cyclical & E-Commerce
+SBUX,Starbucks Corp,0000829224,primary,Consumer Cyclical & E-Commerce
+COST,Costco Wholesale,0000909832,primary,Consumer Cyclical & E-Commerce
+WMT,Walmart Inc.,0000104169,primary,Consumer Defensive & Healthcare
+PG,Procter & Gamble,0000080424,primary,Consumer Defensive & Healthcare
+KO,Coca-Cola Co,0000021344,primary,Consumer Defensive & Healthcare
+PEP,PepsiCo Inc.,0000077476,primary,Consumer Defensive & Healthcare
+LLY,Eli Lilly & Co,0000059478,primary,Consumer Defensive & Healthcare
+JNJ,Johnson & Johnson,0000200406,primary,Consumer Defensive & Healthcare
+MRK,Merck & Co,0000310158,primary,Consumer Defensive & Healthcare
+ABBV,AbbVie Inc.,0001551152,primary,Consumer Defensive & Healthcare
+PFE,Pfizer Inc.,0000078003,primary,Consumer Defensive & Healthcare
+UNH,UnitedHealth Group,0000731766,primary,Consumer Defensive & Healthcare
+CVS,CVS Health Corp,0000064803,primary,Consumer Defensive & Healthcare
+TGT,Target Corp,0000027419,primary,Consumer Defensive & Healthcare
