@@ -22,7 +22,7 @@ Current domains:
 |--------|-------------|----------------|
 | **Aviation** | Projects leveraging publicly available aviation data. | Flight traffic, Social Media tweets |
 | **Finance** | Projects focused on markets, pricing, risk, and market sentiment. | Quantitative Finance, Social Media Market Sentiment, Snowflake Fundamental Valiation Pipeline |
-| **Sports** | Projects focused on sports data. | F1 FastAPI Analytics |
+| **Sports** | Projects focused on sports data. | F1 FastAPI Analytics, AWS Football Moneyball Pipeline |
 | **Transportation** | Projects leveraging public transportation data. | NYC Taxi & Ride-Hailing SQL Server Data Warehouse
 
 ---
@@ -43,6 +43,7 @@ This domain currently includes projects focused on:
 ### **Sports**
 This domain currently includes projects focused on:
 - Formula 1 Qualifying Dashboard
+- AWS Football Moneyball PySpark Pipeline
 
 ### **Transportation**
 This domain currently includes projects focused on:
