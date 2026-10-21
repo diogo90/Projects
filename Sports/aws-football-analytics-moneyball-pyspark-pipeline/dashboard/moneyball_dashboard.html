@@ -43,7 +43,7 @@
   .kpi .value { font-size: 28px; font-weight: 650; margin-top: 2px; font-variant-numeric: tabular-nums; }
   .kpi .sub { color: var(--text-muted); font-size: 12px; }
   .grid { display: grid; grid-template-columns: 1.65fr 1fr; gap: 14px; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+  .grid2 { display: grid; grid-template-columns: 0.8fr 1.35fr; gap: 14px; margin-top: 14px; }
   .card { padding: 16px 18px; }
   .card h2 { font-size: 15.5px; margin: 0; }
   .card .desc { color: var(--text-secondary); font-size: 12.5px; margin: 3px 0 10px; }
@@ -67,6 +67,7 @@
        letter-spacing: .04em; border-bottom: 1px solid var(--border); padding: 6px 8px; }
   td { padding: 7px 8px; border-bottom: 1px solid var(--grid); }
   td.num, th.num { text-align: right; white-space: nowrap; }
+  td .sub { color: var(--text-muted); font-size: 11px; line-height: 1.2; }
   .delta-up { color: var(--text-primary); } .delta-up::before { content: "▲ "; color: var(--pos); font-size: 10px; }
   .delta-down { color: var(--text-primary); } .delta-down::before { content: "▼ "; color: var(--neg); font-size: 10px; }
   .note { color: var(--text-muted); font-size: 12px; margin-top: 18px; line-height: 1.6; }
@@ -113,7 +114,7 @@
     </div>
     <div class="card">
       <h2>Moneyball Target shortlist</h2>
-      <div class="desc">Ranked by performance score. Value change = 12 months after the tournament final.</div>
+      <div class="desc">Ranked by performance score. Each target's pre-tournament value is at or below the median value for their position (shown as % of median). Value change = 12 months after the tournament final.</div>
       <div class="scroll"><table id="shortlist"></table></div>
     </div>
   </section>
@@ -297,10 +298,12 @@ document.getElementById("backtest-table").innerHTML =
 (function shortlist() {
   const rows = DATA.players.filter(p => p.segment === "Moneyball Target").sort((a, b) => b.performance_score - a.performance_score);
   const t = document.getElementById("shortlist");
-  t.innerHTML = `<thead><tr><th>Player</th><th>Nation</th><th>Pos</th><th class="num">Age</th><th class="num">Score</th><th class="num">Value pre</th><th class="num">+12 mo</th><th class="num">Δ</th></tr></thead><tbody>` +
+  t.innerHTML = `<thead><tr><th>Player</th><th>Nation</th><th>Pos</th><th class="num">Age</th><th class="num">Score</th><th class="num">Value pre</th><th class="num">Pos. median</th><th class="num">+12 mo</th><th class="num">Δ</th></tr></thead><tbody>` +
     rows.map(p => `<tr><td>${p.player_nickname || p.player_name}</td><td>${p.national_team}</td><td>${p.position_group}</td>
       <td class="num">${p.age_at_tournament ?? "–"}</td><td class="num">${p.performance_score.toFixed(1)}</td>
-      <td class="num">${fmtEur(p.value_pre_tournament_eur)}</td><td class="num">${fmtEur(p.value_12m_after_eur)}</td>
+      <td class="num">${fmtEur(p.value_pre_tournament_eur)}</td>
+      <td class="num">${fmtEur(p.position_median_value_eur)}<div class="sub">${p.position_median_value_eur ? Math.round(p.value_pre_tournament_eur / p.position_median_value_eur * 100) + "% of median" : ""}</div></td>
+      <td class="num">${fmtEur(p.value_12m_after_eur)}</td>
       <td class="num ${p.value_change_12m_pct > 0 ? "delta-up" : p.value_change_12m_pct < 0 ? "delta-down" : ""}">${fmtPct(p.value_change_12m_pct)}</td></tr>`).join("") + "</tbody>";
 })();
 
