@@ -1,0 +1,44 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ListProjectBucket",
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket", "s3:GetBucketLocation"],
+      "Resource": "arn:aws:s3:::football-analytics-moneyball-<ACCOUNT_ID>"
+    },
+    {
+      "Sid": "ReadBronze",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": "arn:aws:s3:::football-analytics-moneyball-<ACCOUNT_ID>/bronze/*"
+    },
+    {
+      "Sid": "ReadWriteSilverGoldAndGlueAssets",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
+      "Resource": [
+        "arn:aws:s3:::football-analytics-moneyball-<ACCOUNT_ID>/silver/*",
+        "arn:aws:s3:::football-analytics-moneyball-<ACCOUNT_ID>/gold/*",
+        "arn:aws:s3:::football-analytics-moneyball-<ACCOUNT_ID>/glue-assets/*",
+        "arn:aws:s3:::football-analytics-moneyball-<ACCOUNT_ID>/silver_$folder$",
+        "arn:aws:s3:::football-analytics-moneyball-<ACCOUNT_ID>/gold_$folder$",
+        "arn:aws:s3:::football-analytics-moneyball-<ACCOUNT_ID>/glue-assets_$folder$"
+      ]
+    },
+    {
+      "Sid": "NotebookSessionPassesItself",
+      "Effect": "Allow",
+      "Action": ["iam:PassRole"],
+      "Resource": "arn:aws:iam::<ACCOUNT_ID>:role/AWSGlueServiceRole-FootballAnalytics",
+      "Condition": { "StringEquals": { "iam:PassedToService": "glue.amazonaws.com" } }
+    },
+    {
+      "Sid": "PublishPipelineMetrics",
+      "Effect": "Allow",
+      "Action": ["cloudwatch:PutMetricData"],
+      "Resource": "*",
+      "Condition": { "StringEquals": { "cloudwatch:namespace": "FootballAnalytics/Pipelines" } }
+    }
+  ]
+}

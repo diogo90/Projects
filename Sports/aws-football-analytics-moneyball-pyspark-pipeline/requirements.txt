@@ -1,0 +1,4 @@
+# Local tooling only (the pipelines run on AWS Glue 5.0, which ships PySpark 3.5)
+requests>=2.31        # scripts/source_statsbomb.py
+kaggle>=1.6           # optional: download the Transfermarkt archive from the CLI
+awscli>=1.32          # optional: upload to S3 / deploy the workflow

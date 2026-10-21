@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moneyball Scouting Matrix</title>
+<!-- Template for build_dashboard.py: the gold-layer data is injected where the DATA placeholder sits -->
+<style>
+  :root {
+    color-scheme: light;
+    --surface-0: #f4f3ef; --surface-1: #fcfcfb; --border: #e4e3df; --grid: #ecebe7;
+    --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #7a7974;
+    --target: #2a78d6; --veteran: #eb6834; --star: #1baf7a; --other: #c3c2bb;
+    --pos: #2a78d6; --neg: #e34948; --neutral: #f0efec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface-0: #121211; --surface-1: #1a1a19; --border: #2e2e2c; --grid: #262624;
+      --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #8f8e88;
+      --target: #3987e5; --veteran: #d95926; --star: #199e70; --other: #4a4a46;
+      --pos: #3987e5; --neg: #e66767; --neutral: #383835;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-0: #121211; --surface-1: #1a1a19; --border: #2e2e2c; --grid: #262624;
+    --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #8f8e88;
+    --target: #3987e5; --veteran: #d95926; --star: #199e70; --other: #4a4a46;
+    --pos: #3987e5; --neg: #e66767; --neutral: #383835;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--surface-0); color: var(--text-primary);
+         font: 14px/1.45 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1240px; margin: 0 auto; padding: 28px 16px 40px; }
+  header h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  header p { margin: 0; color: var(--text-secondary); max-width: 860px; }
+  .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: 6px; }
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 22px 0; }
+  .kpi, .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; }
+  .kpi { padding: 14px 16px; }
+  .kpi .label { color: var(--text-secondary); font-size: 12.5px; }
+  .kpi .value { font-size: 28px; font-weight: 650; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .kpi .sub { color: var(--text-muted); font-size: 12px; }
+  .grid { display: grid; grid-template-columns: 1.65fr 1fr; gap: 14px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+  .card { padding: 16px 18px; }
+  .card h2 { font-size: 15.5px; margin: 0; }
+  .card .desc { color: var(--text-secondary); font-size: 12.5px; margin: 3px 0 10px; }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; align-items: center; }
+  .filters span { color: var(--text-muted); font-size: 12px; margin-right: 2px; }
+  .chip { border: 1px solid var(--border); background: transparent; color: var(--text-secondary);
+          border-radius: 999px; padding: 3px 11px; font: inherit; font-size: 12.5px; cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary); }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--text-secondary); margin-top: 4px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+  svg text { fill: var(--text-secondary); font-size: 11px; }
+  svg .axis-title { fill: var(--text-muted); font-size: 11.5px; }
+  svg .label-strong { fill: var(--text-primary); font-weight: 600; }
+  .tip { position: fixed; pointer-events: none; background: var(--surface-1); border: 1px solid var(--border);
+         border-radius: 8px; padding: 8px 10px; font-size: 12.5px; box-shadow: 0 6px 20px rgba(0,0,0,.12);
+         opacity: 0; transition: opacity .1s; max-width: 260px; z-index: 5; }
+  .tip b { display: block; margin-bottom: 2px; }
+  .tip .muted { color: var(--text-muted); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+  th { text-align: left; font-weight: 600; color: var(--text-muted); font-size: 11.5px; text-transform: uppercase;
+       letter-spacing: .04em; border-bottom: 1px solid var(--border); padding: 6px 8px; }
+  td { padding: 7px 8px; border-bottom: 1px solid var(--grid); }
+  td.num, th.num { text-align: right; white-space: nowrap; }
+  .delta-up { color: var(--text-primary); } .delta-up::before { content: "▲ "; color: var(--pos); font-size: 10px; }
+  .delta-down { color: var(--text-primary); } .delta-down::before { content: "▼ "; color: var(--neg); font-size: 10px; }
+  .note { color: var(--text-muted); font-size: 12px; margin-top: 18px; line-height: 1.6; }
+  .scroll { overflow-x: auto; }
+  @media (max-width: 900px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .grid, .grid2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Gold layer · Recruitment analytics</div>
+    <h1>Moneyball Scouting Matrix — Euro 2024 &amp; Copa América 2024</h1>
+    <p>Tournament performance (StatsBomb event data) joined to market value (Transfermarkt). Which players
+       performed like stars but were priced like squad players, and did the market catch up within a year?</p>
+  </header>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Performance vs. price</h2>
+      <div class="desc">Each dot is a player (≥180 minutes, outfield). Moneyball Targets sit bottom-right: top-20% performance, below-median price, aged ≤26.</div>
+      <div class="filters" id="filters"></div>
+      <div id="scatter"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="card">
+      <h2>Back-test: 12-month portfolio return</h2>
+      <div class="desc">Buy every player in a segment at the pre-tournament value; value the portfolio 12 months after the final.</div>
+      <div id="backtest"></div>
+      <div class="scroll" style="margin-top:14px"><table id="backtest-table"></table></div>
+    </div>
+  </section>
+
+  <section class="grid2">
+    <div class="card">
+      <h2>Why age is part of the rule</h2>
+      <div class="desc">Median 12-month value change by age band. Cheap and young is where value grows. Cheap and old is cheap for a reason.</div>
+      <div id="age"></div>
+      <div class="legend"><span><i style="background:var(--target)"></i>Below-median price</span><span><i style="background:var(--other)"></i>Above-median price</span></div>
+    </div>
+    <div class="card">
+      <h2>Moneyball Target shortlist</h2>
+      <div class="desc">Ranked by performance score. Value change = 12 months after the tournament final.</div>
+      <div class="scroll"><table id="shortlist"></table></div>
+    </div>
+  </section>
+
+  <p class="note">
+    Sources: StatsBomb Open Data (event &amp; lineup data, Euro 2024 + Copa América 2024) · Transfermarkt via Kaggle
+    (davidcariboo/player-scores). Performance score = position-weighted percentiles of per-90 metrics (npxG, xA, progressive
+    passes/carries, box entries, dribbles, pressures, defensive actions). Players are matched across sources by nationality-blocked
+    fuzzy name matching. Small samples (tournament minutes) and a back-test on a single tournament window: treat the results as
+    a hypothesis generator, not a verdict.
+  </p>
+</main>
+<div class="tip" id="tip"></div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const NS = "http://www.w3.org/2000/svg";
+const SEG = {
+  "Moneyball Target": "var(--target)", "Veteran Value": "var(--veteran)", "Proven Star": "var(--star)",
+  "Squad Player": "var(--other)", "Overpriced": "var(--other)", "Unvalued / unmatched": "var(--other)"
+};
+const fmtEur = v => v == null ? "–" : v >= 1e9 ? `€${(v / 1e9).toFixed(2)}B` : v >= 1e6 ? `€${(v / 1e6).toFixed(v >= 1e7 ? 0 : 1)}M` : `€${Math.round(v / 1e3)}k`;
+const fmtPct = v => v == null ? "–" : `${v > 0 ? "+" : ""}${v.toFixed(1)}%`;
+const el = (tag, attrs = {}, parent) => {
+  const n = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+  if (parent) parent.appendChild(n);
+  return n;
+};
+const tip = document.getElementById("tip");
+const showTip = (e, html) => {
+  tip.innerHTML = html; tip.style.opacity = 1;
+  const x = Math.min(e.clientX + 14, window.innerWidth - 270);
+  tip.style.left = x + "px"; tip.style.top = (e.clientY + 14) + "px";
+};
+const hideTip = () => tip.style.opacity = 0;
+
+// ---------- KPI tiles ----------
+(function kpis() {
+  const k = DATA.kpi, bt = Object.fromEntries(DATA.backtest.map(b => [b.segment, b]));
+  const t = bt["Moneyball Target"] || {}, s = bt["Proven Star"] || {};
+  const tiles = [
+    ["Players profiled", k.sb_players ?? "–", "both tournaments"],
+    ["Identity match rate", k.match_rate_pct != null ? k.match_rate_pct.toFixed(1) + "%" : "–", "StatsBomb ⇄ Transfermarkt"],
+    ["Eligible players", k.eligible, "≥180 min, outfield"],
+    ["Moneyball Targets", k.targets, "top-20% perf · cheap · ≤26"],
+    ["Target portfolio, 12 mo", fmtPct(t.portfolio_return_pct), `vs ${fmtPct(s.portfolio_return_pct)} for Proven Stars`],
+  ];
+  document.getElementById("kpis").innerHTML = tiles.map(([l, v, sub]) =>
+    `<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="sub">${sub}</div></div>`).join("");
+})();
+
+// ---------- Scatter: performance vs pre-tournament value (log scale) ----------
+const state = { pos: "All", comp: "All" };
+function scatter() {
+  const box = document.getElementById("scatter");
+  box.innerHTML = "";
+  const W = box.clientWidth || 700, H = 400, m = { l: 56, r: 16, t: 10, b: 40 };
+  const svg = el("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img",
+                          "aria-label": "Scatter of performance score against pre-tournament market value" }, box);
+  const pts = DATA.players.filter(p => p.value_pre_tournament_eur && p.performance_score != null
+    && (state.pos === "All" || p.position_group === state.pos)
+    && (state.comp === "All" || p.competition_name === state.comp));
+  const x = v => m.l + (v / 100) * (W - m.l - m.r);
+  const lo = Math.log10(1e5), hi = Math.log10(2e8);
+  const y = v => H - m.b - ((Math.log10(Math.max(v, 1e5)) - lo) / (hi - lo)) * (H - m.t - m.b);
+  // grid + axes
+  for (const v of [1e5, 1e6, 1e7, 1e8]) {
+    el("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), stroke: "var(--grid)" }, svg);
+    el("text", { x: m.l - 8, y: y(v) + 4, "text-anchor": "end" }, svg).textContent = fmtEur(v);
+  }
+  for (const v of [0, 20, 40, 60, 80, 100]) {
+    el("line", { x1: x(v), x2: x(v), y1: m.t, y2: H - m.b, stroke: "var(--grid)" }, svg);
+    el("text", { x: x(v), y: H - m.b + 16, "text-anchor": "middle" }, svg).textContent = v;
+  }
+  el("text", { x: (m.l + W - m.r) / 2, y: H - 4, "text-anchor": "middle", class: "axis-title" }, svg).textContent = "Performance score (position-weighted percentile, 0–100)";
+  el("text", { x: 14, y: (m.t + H - m.b) / 2, "text-anchor": "middle", class: "axis-title",
+               transform: `rotate(-90 14 ${(m.t + H - m.b) / 2})` }, svg).textContent = "Pre-tournament value (log)";
+  // draw neutral segments first so highlighted ones sit on top
+  const order = s => ["Squad Player", "Overpriced", "Unvalued / unmatched"].includes(s) ? 0 : s === "Moneyball Target" ? 3 : 1;
+  pts.sort((a, b) => order(a.segment) - order(b.segment));
+  for (const p of pts) {
+    const hl = order(p.segment) > 0;
+    const c = el("circle", { cx: x(p.performance_score), cy: y(p.value_pre_tournament_eur), r: hl ? 5.5 : 4,
+      fill: SEG[p.segment], "fill-opacity": hl ? 0.95 : 0.7, stroke: "var(--surface-1)", "stroke-width": 1.5 }, svg);
+    const name = p.player_nickname || p.player_name;
+    c.addEventListener("mousemove", e => showTip(e, `<b>${name}</b><span class="muted">${p.national_team} · ${p.position_group} · age ${p.age_at_tournament ?? "–"}</span><br>
+      Score ${p.performance_score.toFixed(1)} · ${Math.round(p.minutes)} min<br>Value ${fmtEur(p.value_pre_tournament_eur)} → ${fmtEur(p.value_12m_after_eur)} (${fmtPct(p.value_change_12m_pct)})<br><span class="muted">${p.segment}</span>`));
+    c.addEventListener("mouseleave", hideTip);
+  }
+  // selective direct labels: the two targets whose value grew the most, placed in the empty area below-right
+  pts.filter(p => p.segment === "Moneyball Target" && p.value_change_12m_pct != null)
+    .sort((a, b) => b.value_change_12m_pct - a.value_change_12m_pct).slice(0, 2)
+    .forEach((p, i) => {
+      const px = x(p.performance_score), py = y(p.value_pre_tournament_eur);
+      // Right-align the label to the plot edge so it never clips, then draw the leader to its start
+      const ly = y(p.value_pre_tournament_eur) + 34 + i * 30;
+      const t = el("text", { x: W - m.r - 2, y: ly, "text-anchor": "end", class: "label-strong" }, svg);
+      t.textContent = `${p.player_nickname || p.player_name} ${fmtPct(p.value_change_12m_pct)}`;
+      const lx = W - m.r - 2 - t.getComputedTextLength() - 6;
+      el("line", { x1: px + 5, y1: py + 3, x2: lx, y2: ly - 4, stroke: "var(--text-muted)", "stroke-width": 1 }, svg);
+    });
+}
+(function filters() {
+  const f = document.getElementById("filters");
+  const groups = [["Position", "pos", ["All", "ATT", "MID", "DEF"]], ["Tournament", "comp", ["All", "UEFA Euro", "Copa America"]]];
+  for (const [label, key, opts] of groups) {
+    f.insertAdjacentHTML("beforeend", `<span>${label}</span>`);
+    for (const o of opts) {
+      const b = document.createElement("button");
+      b.className = "chip"; b.textContent = o; b.setAttribute("aria-pressed", o === state[key]);
+      b.onclick = () => { state[key] = o; f.querySelectorAll(`[data-k=${key}]`).forEach(x => x.setAttribute("aria-pressed", x.textContent === o)); scatter(); };
+      b.dataset.k = key; f.appendChild(b);
+    }
+  }
+  document.getElementById("legend").innerHTML = [["Moneyball Target", "var(--target)"], ["Veteran Value", "var(--veteran)"],
+    ["Proven Star", "var(--star)"], ["Squad / Overpriced", "var(--other)"]].map(([l, c]) => `<span><i style="background:${c}"></i>${l}</span>`).join("");
+})();
+
+// ---------- Horizontal diverging bars ----------
+function hbars(target, rows, valueKey, labelKey, extra) {
+  const box = document.getElementById(target);
+  const W = box.clientWidth || 420, rowH = 46, pad = 54, m = { l: 118, r: 8, t: 6, b: 8 };
+  const H = m.t + m.b + rows.length * rowH;
+  const svg = el("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img" }, box);
+  const vals = rows.map(r => r[valueKey]);
+  // Reserve room for value labels on both sides so they never touch the category labels
+  const pos = Math.max(1, ...vals), neg = Math.max(1, ...vals.map(v => -v));
+  const sc = (W - m.l - m.r - 2 * pad) / (pos + neg), x0 = m.l + pad + neg * sc;
+  el("line", { x1: x0, x2: x0, y1: m.t, y2: H - m.b, stroke: "var(--text-muted)", "stroke-width": 1 }, svg);
+  rows.forEach((r, i) => {
+    const v = r[valueKey], cy = m.t + i * rowH + rowH / 2, w = Math.abs(v) * sc;
+    el("text", { x: m.l - 10, y: cy + 4, "text-anchor": "end", class: r[labelKey] === "Moneyball Target" ? "label-strong" : "" }, svg).textContent = r[labelKey];
+    const rect = el("rect", { x: v >= 0 ? x0 : x0 - w, y: cy - 9, width: Math.max(w, 1), height: 18, rx: 4,
+                              fill: v >= 0 ? "var(--pos)" : "var(--neg)" }, svg);
+    el("text", { x: v >= 0 ? x0 + w + 6 : x0 - w - 6, y: cy + 4, "text-anchor": v >= 0 ? "start" : "end", class: "label-strong" }, svg).textContent = fmtPct(v);
+    rect.addEventListener("mousemove", e => showTip(e, extra(r)));
+    rect.addEventListener("mouseleave", hideTip);
+  });
+}
+const segOrder = ["Moneyball Target", "Proven Star", "Squad Player", "Overpriced", "Veteran Value"];
+hbars("backtest", [...DATA.backtest].sort((a, b) => segOrder.indexOf(a.segment) - segOrder.indexOf(b.segment)),
+  "portfolio_return_pct", "segment",
+  r => `<b>${r.segment}</b>${r.players} players<br>Cost ${fmtEur(r.portfolio_cost_eur)} → ${fmtEur(r.portfolio_value_12m_after_eur)}<br>Median player change ${fmtPct(r.median_value_change_pct)}<br>${r.pct_players_value_up}% of players gained value`);
+// Companion table with the numbers behind the bars
+document.getElementById("backtest-table").innerHTML =
+  `<thead><tr><th>Segment</th><th class="num">Players</th><th class="num">Cost</th><th class="num">+12 mo</th><th class="num">% up</th></tr></thead><tbody>` +
+  [...DATA.backtest].sort((a, b) => segOrder.indexOf(a.segment) - segOrder.indexOf(b.segment)).map(r =>
+    `<tr><td>${r.segment}</td><td class="num">${r.players}</td><td class="num">${fmtEur(r.portfolio_cost_eur)}</td>
+     <td class="num">${fmtEur(r.portfolio_value_12m_after_eur)}</td><td class="num">${r.pct_players_value_up}%</td></tr>`).join("") + "</tbody>";
+
+// ---------- Age insight: grouped bars ----------
+(function age() {
+  const box = document.getElementById("age");
+  const rows = DATA.age, W = box.clientWidth || 520, H = 300, m = { l: 44, r: 10, t: 22, b: 44 };
+  const svg = el("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img" }, box);
+  const all = rows.flatMap(r => [r.cheap_median, r.dear_median]).filter(v => v != null);
+  // Round the domain out to tidy 20% steps
+  const top = Math.ceil(Math.max(10, ...all) / 20) * 20, bot = Math.floor(Math.min(-10, ...all) / 20) * 20;
+  const y = v => m.t + (top - v) / (top - bot) * (H - m.t - m.b);
+  for (let v = bot; v <= top; v += 20) {
+    el("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), stroke: v === 0 ? "var(--text-muted)" : "var(--grid)" }, svg);
+    el("text", { x: m.l - 6, y: y(v) + 4, "text-anchor": "end" }, svg).textContent = `${v}%`;
+  }
+  const gw = (W - m.l - m.r) / rows.length, bw = Math.min(46, gw / 2.6);
+  rows.forEach((r, i) => {
+    const cx = m.l + gw * i + gw / 2;
+    [["cheap", "var(--target)", -1], ["dear", "var(--other)", 1]].forEach(([k, c, side]) => {
+      const v = r[`${k}_median`]; if (v == null) return;
+      const x = cx + (side < 0 ? -bw - 2 : 2);
+      const rect = el("rect", { x, y: Math.min(y(v), y(0)), width: bw, height: Math.max(Math.abs(y(v) - y(0)), 1), rx: 4, fill: c }, svg);
+      el("text", { x: x + bw / 2, y: v >= 0 ? y(v) - 5 : y(v) + 13, "text-anchor": "middle", class: "label-strong" }, svg).textContent = fmtPct(v);
+      rect.addEventListener("mousemove", e => showTip(e, `<b>Age ${r.band} · ${k === "cheap" ? "below" : "above"}-median price</b>${r[`${k}_n`]} players<br>Median 12-mo value change ${fmtPct(v)}`));
+      rect.addEventListener("mouseleave", hideTip);
+    });
+    el("text", { x: cx, y: H - 8, "text-anchor": "middle", class: "axis-title" }, svg).textContent = `Age ${r.band}`;
+  });
+})();
+
+// ---------- Shortlist table ----------
+(function shortlist() {
+  const rows = DATA.players.filter(p => p.segment === "Moneyball Target").sort((a, b) => b.performance_score - a.performance_score);
+  const t = document.getElementById("shortlist");
+  t.innerHTML = `<thead><tr><th>Player</th><th>Nation</th><th>Pos</th><th class="num">Age</th><th class="num">Score</th><th class="num">Value pre</th><th class="num">+12 mo</th><th class="num">Δ</th></tr></thead><tbody>` +
+    rows.map(p => `<tr><td>${p.player_nickname || p.player_name}</td><td>${p.national_team}</td><td>${p.position_group}</td>
+      <td class="num">${p.age_at_tournament ?? "–"}</td><td class="num">${p.performance_score.toFixed(1)}</td>
+      <td class="num">${fmtEur(p.value_pre_tournament_eur)}</td><td class="num">${fmtEur(p.value_12m_after_eur)}</td>
+      <td class="num ${p.value_change_12m_pct > 0 ? "delta-up" : p.value_change_12m_pct < 0 ? "delta-down" : ""}">${fmtPct(p.value_change_12m_pct)}</td></tr>`).join("") + "</tbody>";
+})();
+
+scatter();
+window.addEventListener("resize", scatter);
+</script>
+</body>
+</html>

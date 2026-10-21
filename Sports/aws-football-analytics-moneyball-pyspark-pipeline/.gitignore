@@ -1,0 +1,20 @@
+# Raw/source data is reproducible with scripts/ and is not versioned
+data/raw/
+data/raw_to_s3/
+gold_exports/
+
+# Personal implementation guides (not published)
+data/implementation/
+
+# Python / notebooks
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

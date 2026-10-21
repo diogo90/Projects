@@ -1,0 +1,12 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowNotebookUserToPassGlueRole",
+      "Effect": "Allow",
+      "Action": ["iam:PassRole"],
+      "Resource": "arn:aws:iam::<ACCOUNT_ID>:role/AWSGlueServiceRole-FootballAnalytics",
+      "Condition": { "StringEquals": { "iam:PassedToService": "glue.amazonaws.com" } }
+    }
+  ]
+}
